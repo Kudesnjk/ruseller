@@ -1,29 +1,18 @@
 {
   "brandshop": {
     "url": "https://brandshop.ru/muzhskoe/obuv/?limit=240",
-    "shopurl" : "https://brandshop.ru",
     "interval": 5000,
-    "selectors": "#mfilter-content-container > div > div.products-grid.row > div > div.row.category-products > div.product-container > div.product",
-    "titleSelector": {"sel": "h2 > span:nth-child(2)", "attr":  "innerText"},
-    "urlSelector": {"sel": "a.product-image", "attr":  "href"},
-    "imgUrlSelector": {"sel": "a.product-image > img", "attr":  "src"}
+    "function": "$(\"#mfilter-content-container > div > div.products-grid.row > div > div.row.category-products > div.product-container > div.product\").each((i, elem) => {\n                let title = $(elem).find(\"h2 > span:nth-child(2)\").text();\n                let url = $(elem).find(\"a.product-image\").attr(\"href\");\n                let imgUrl = $(elem).find(\"a.product-image > img\").attr(\"src\");\n                data.push({\n                    \"title\": title,\n                    \"url\": url,\n                    \"imgUrl\": imgUrl\n                });\n            });"
   },
   "nike": {
     "url": "https://www.nike.com/ru/w/mens-shoes-nik1zy7ok",
-    "shopurl" : "https://www.nike.com",
     "interval": 5000,
-    "selectors": "#Wall > div > div.results__body > div > main > section > div > div.product-card > div > figure",
-    "titleSelector": {"sel": "a.product-card__link-overlay", "attr":  "innerText"},
-    "urlSelector": {"sel": "a.product-card__link-overlay", "attr":  "href"},
-    "imgUrlSelector": {"sel": "a.product-card__img-link-overlay > div > picture > img", "attr": "src"}
+    "function": "$(\"#Wall > div > div.results__body > div > main > section > div > div.product-card > div > figure\").each((i, elem) => {\n                let title = $(elem).find(\"a.product-card__link-overlay\").text();\n                let url = \"https://www.nike.com\" + $(elem).find(\"a.product-card__link-overlay\").attr(\"href\");\n                data.push({\n                    \"title\": title,\n                    \"url\": url\n                });\n            });"
   },
   "sneakerhead": {
     "url" : "https://sneakerhead.ru/shoes/sneakers/",
     "shopurl" : "https://sneakerhead.ru",
     "interval" : 5000,
-    "selectors" : "body > div.container.category-page > div.catalog > div > div.catalog__col.catalog__col--main > div.product-cards > div.product-cards__list > div.product-cards__item > div",
-    "titleSelector" : {"sel": "h5 > a", "attr":  "title"},
-    "urlSelector": {"sel": "h5 > a", "attr":  "href"},
-    "imgUrlSelector": {"sel": "div.product-card__image > div.product-card__image-inner > picture > source", "attr": "data-src"}
+    "function": "$(\"body > div.container.category-page > div.catalog > div > div.catalog__col.catalog__col--main > div.product-cards > div.product-cards__list > div.product-cards__item > div\").each((i, elem) => {\n                let title = $(elem).find(\"h5 > a\").attr(\"title\");\n                let url = \"https://sneakerhead.ru\" + $(elem).find(\"h5 > a\").attr(\"href\");\n                let imgUrl = \"https://sneakerhead.ru\" + $(elem).find(\"div.product-card__image > div.product-card__image-inner > picture > source\").attr(\"data-src\");\n                data.push({\n                    \"title\": title,\n                    \"url\": url,\n                    \"imgUrl\": imgUrl\n                });\n            });"
   }
 }
