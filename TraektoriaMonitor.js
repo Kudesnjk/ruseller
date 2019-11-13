@@ -41,7 +41,7 @@ function Analyze(items, shopName){
     }
     let toNotify = intersection(items, notified);
     let toSplice = intersection(notified, items);
-
+    console.log(toNotify);
     toNotify.forEach(Nelem=>{
         toSplice.forEach(Selem=>{
             if(Nelem["title"] === Selem["title"]){
@@ -56,8 +56,6 @@ function Analyze(items, shopName){
     if(toNotify.length !== 0){console.log("to Notify(" + shopName + "): ", toNotify);}
     if(toSplice.length !== 0){console.log("to Delete(" + shopName + "):", toSplice);}
 
-
-    console.log(toNotify);
     toNotify.forEach(elem => {
         notified.push(elem);
 
@@ -119,66 +117,6 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     let generalChannel = client.channels.get(ChannelID);
     generalChannel.send("Traektoria online!");
-});
-
-client.on('message', msg => {
-    if(msg.channel.id === ChannelID) {
-        let generalChannel = client.channels.get(ChannelID);
-        let regforadd = /!add [\s\S]+/;
-        let regfordel = /!delete [\s\S]+/;
-        if (msg.content === "!help") {
-            generalChannel.send("\"!add + название фильтра\" - добавляет заданный фильтр\n" +
-                "\"!delete + название фильтра\" - удаляет заданный фильтр\n" +
-                "!\"show\" - отображает текущие фильтров");
-        } else if (msg.content.search(regforadd) !== -1 && !msg.author.bot) {
-            let patterns = JSON.parse(fs.readFileSync('patterns.json', 'utf8'));
-            let tmp = msg.content.substr(5);
-            let regval = "[\\s\\S]*";
-            let pushval = regval;
-            tmp = tmp.split(" ");
-            tmp.forEach(elem => {
-                pushval += elem.toLowerCase();
-                pushval += regval;
-            });
-            if (!patterns.includes(pushval)) {
-                patterns.push(pushval);
-                fs.writeFileSync("patterns.json", JSON.stringify(patterns));
-                generalChannel.send("Паттерн добавлен!");
-            } else {
-                generalChannel.send("Паттерн существует!");
-            }
-        } else if (msg.content.search(regfordel) !== -1 && !msg.author.bot) {
-            let patterns = JSON.parse(fs.readFileSync('patterns.json', 'utf8'));
-            let tmp = msg.content.substr(8);
-            let regval = "[\\s\\S]*";
-            let pushval = regval;
-            tmp = tmp.split(" ");
-            tmp.forEach(elem => {
-                pushval += elem;
-                pushval += regval;
-            });
-            if (patterns.includes(pushval)) {
-                patterns.splice(patterns.indexOf(pushval), 1);
-                fs.writeFileSync("patterns.json", JSON.stringify(patterns));
-                generalChannel.send("Паттерн удален!");
-            } else {
-                generalChannel.send("Паттерн не существует!");
-            }
-        } else if (msg.content === "!show") {
-            let patterns = JSON.parse(fs.readFileSync('patterns.json', 'utf8'));
-            if (patterns.length === 0) {
-                generalChannel.send("Не существует ни одного фильтра");
-            } else {
-                let output = "Существующие фильтры:\n";
-                patterns.forEach(elem => {
-                    output += elem.replace(/\[\\s\\S]\*/g, " ") + "\n";
-                });
-                generalChannel.send(output);
-            }
-        } else if (msg.content.substr[0] === "!") {
-            generalChannel.send("Неверная комманда");
-        }
-    }
 });
 
 client.login(token);
