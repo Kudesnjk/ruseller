@@ -27,23 +27,12 @@ function intersection(A, B) {
     return result;
 }
 
-function CheckSite (shopName, url, shopurl, selectors, titleSelector, urlSelector, imgUrlSelector) {
-    return axios.get(url, {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"})
+function CheckSite (config) {
+    return axios.get(config.url, {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36"})
         .then(response => {
             data = [];
             const $ = cheerio.load(response.data);
-            $(selectors).each((i, elem) => {
-                let title = titleSelector.attr === "innerText" ? $(elem).find(titleSelector.sel).text() : $(elem).find(titleSelector.sel).attr(titleSelector.attr);
-                let url = urlSelector.attr === "innerText" ? $(elem).find(urlSelector.sel).text() : $(elem).find(urlSelector.sel).attr(urlSelector.attr);
-                let imgUrl = imgUrlSelector.attr === "innerText" ? $(elem).find(imgUrlSelector.sel).text() : $(elem).find(imgUrlSelector.sel).attr(imgUrlSelector.attr);
-                if(url.search(shopName) < 0){url = shopurl + url;}
-                if(imgUrl.search(shopName) < 0){imgUrl = shopurl + imgUrl;}
-                data.push({
-                    "title": title,
-                    "url": url,
-                    "imgUrl": imgUrl
-                });
-            });
+            eval(config.function);
             return data;
         })
         .catch(err => {
@@ -58,7 +47,13 @@ fs.watch('config.json', (eventType, filename)=>{
     main();
 });
 
-main();
+// main();
+const {Worker} = require('worker_threads');
+const worker1 = new Worker('./BrandshopMonitor.js');
+// const worker2 = new Worker('./NikeUpcomingMonitor.js');
+// worker1.on('message',res => {console.log(res)});
+// worker2.on('message',res => {console.log(res)});
+
 
 function main(){
     let config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
@@ -67,7 +62,7 @@ function main(){
     for(let conf in config) {
         setTimeout(() => {
             intervals.push(setInterval(() => {
-                CheckSite(conf, config[conf].url,config[conf].shopurl, config[conf].selectors, config[conf].titleSelector, config[conf].urlSelector, config[conf].imgUrlSelector).then(result => {
+                CheckSite(config[conf]).then(result => {
                     let filtered = [];
                     let patterns = JSON.parse(fs.readFileSync('patterns.json', 'utf8'));
                     patterns.forEach(elem =>{
@@ -91,10 +86,13 @@ function main(){
                     toNotify.forEach(elem => {
                         notified.push(elem);
 
-                        embed.setTitle(elem["title"]);
-                        if(elem["url"].match(/https?:\/\/(\w+\.)+\w\w\w?\/\w+/) !== null){embed.setDescription(elem["url"]);}
-                        if(elem["imgUrl"].match(/https?:\/\/(\w+\.)+\w\w\w?\/\w+/) !== null){embed.setImage(elem["imgUrl"]);}
-
+                        // embed.setTitle(elem["title"]);
+                        // if(elem["url"].match(/https?:\/\/(\w+\.)+\w\w\w?\/\w+/) !== null){embed.setDescription(elem["url"]);}
+                        // if(elem["imgUrl"].match(/https?:\/\/(\w+\.)+\w\w\w?\/\w+/) !== null){embed.setImage(elem["imgUrl"]);}
+                        emdeb
+                            .setTitle(elem["title"])
+                            .setDescription(elem["url"])
+                            .setImage(elem["image"]);
                         client.channels.get(ChannelID).send(embed);
                     });
 
@@ -182,4 +180,4 @@ client.on('message', msg => {
     }
 });
 
-client.login(token);
+// client.login(token);

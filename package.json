@@ -10,6 +10,16 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
-    "cheerio": "^1.0.0-rc.3"
+    "cheerio": "^1.0.0-rc.3",
+    "cloudscraper": "^4.4.0",
+    "discord.js": "^11.5.1",
+    "node-gzip": "^1.1.2",
+    "puppeteer-extra": "^3.1.7",
+    "request-promise": "latest",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {
+    "mongodb": "^3.4.1",
+    "puppeteer": "^2.0.0"
   }
 }
